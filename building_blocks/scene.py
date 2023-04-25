@@ -199,12 +199,30 @@ class CircleBox(Scene):
         circle = Circle(radius=0.5, color=YELLOW).move_to(points[0])
 
         # Create text to show the current position of the circle
-        text = Tex("Current position: ").to_corner(UR)
-        current_position = DecimalNumber(
-            0, num_decimal_places=1).next_to(text, RIGHT)
+        text = Tex("Current position: ", font_size=24).to_corner(
+            UR).shift(LEFT * 3 + DOWN * 0.5)
+        left_bracket = Tex("[", font_size=24).next_to(text).shift(LEFT * 0.2)
+        current_position = DecimalNumber(circle.get_center(
+        )[0], num_decimal_places=1, font_size=24).next_to(left_bracket, RIGHT)
+        comma_1 = Tex(", ", font_size=24).next_to(current_position, RIGHT).shift(DOWN * 0.5)
+        current_position_y = DecimalNumber(circle.get_center(
+        )[1], num_decimal_places=1, font_size=24).next_to(comma_1, RIGHT)
+        comma_2 = Tex(", ", font_size=24).next_to(current_position_y, RIGHT).shift(DOWN * 0.5)
+        current_position_z = DecimalNumber(circle.get_center(
+        )[2], num_decimal_places=1, font_size=24).next_to(comma_2, RIGHT)
+        right_bracket = Tex(" ]", font_size=24).next_to(text).shift(LEFT * 0.2)
+
+        def update_current_position_value(mob):
+            current_position_value = circle.get_center()
+            current_position.set_value(current_position_value[0])
+            current_position_y.set_value(current_position_value[1])
+            current_position_z.set_value(current_position_value[2])
+
+        current_position.add_updater(update_current_position_value)
 
         # Add everything to the scene
-        self.add(box, circle, text, current_position)
+        self.add(box, circle, text, left_bracket, current_position, comma_1,
+                 current_position_y, comma_2, current_position_z, right_bracket)
 
         # Animate the circle moving around the box
         for i in range(4):
@@ -212,6 +230,5 @@ class CircleBox(Scene):
             self.play(
                 MoveAlongPath(circle, Line(circle.get_center(),
                               next_point), rate_func=linear),
-                current_position.animate.set_value(i+1),
                 run_time=2
             )

@@ -3,3 +3,6 @@
 **.mp4
 **.tex
 partial_movie_file_list.txt
+**.aux
+**.dvi
+**.log
